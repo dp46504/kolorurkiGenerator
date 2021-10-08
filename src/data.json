@@ -1,0 +1,29 @@
+{
+  "PONIEDZIAŁEK": [
+    {
+      "godzina": "17:00",
+      "nazwa": "pole dance",
+      "poziom": "A2",
+      "prowadzaca": "Paula"
+    },
+    {
+      "godzina": "18:00",
+      "nazwa": "exotic",
+      "poziom": "A1",
+      "prowadzaca": "MIRKA"
+    }
+  ],
+  "WTOREK": [
+    {
+      "godzina": "10:00",
+      "nazwa": "pole",
+      "poziom": "C1",
+      "prowadzaca": "Patrycja"
+    }
+  ],
+  "ŚRODA": [],
+  "CZWARTEK": [],
+  "PIĄTEK": [],
+  "SOBOTA": [],
+  "NIEDZIELA": []
+}
