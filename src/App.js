@@ -24,71 +24,18 @@ import html2canvas from "html2canvas";
 import { useForm } from "react-hook-form";
 import { saveAs } from "file-saver";
 function App() {
+  const loadFromStorage = () => {
+    let items = JSON.parse(localStorage.getItem("zajecia"));
+    if (items === null) {
+      return [[], [], [], [], [], [], []];
+    }
+    return JSON.parse(localStorage.getItem("zajecia"));
+  };
+
   let [scale, setScale] = useState(50);
   let [width, setWidth] = useState(1080);
   let [height, setHeight] = useState(1920);
-  let [dane, setDane] = useState([
-    [
-      {
-        godzina: "17:00",
-        nazwa: "pole dance",
-        poziom: "A1",
-        prowadzaca: "Paula",
-        wolne: "N",
-      },
-      {
-        godzina: "18:00",
-        nazwa: "pole dance",
-        poziom: "B1",
-        prowadzaca: "Paula",
-      },
-      {
-        godzina: "19:00",
-        nazwa: "pole dance",
-        poziom: "A2",
-        prowadzaca: "Sandra",
-      },
-    ],
-    [
-      {
-        godzina: "17:00",
-        nazwa: "pole dance",
-        poziom: "A1",
-        prowadzaca: "Maja",
-      },
-      {
-        godzina: "18:00",
-        nazwa: "exotic",
-        poziom: "A/b",
-        prowadzaca: "maja",
-      },
-      {
-        godzina: "19:00",
-        nazwa: "pole dance",
-        poziom: "A1",
-        prowadzaca: "maja",
-        wolne: 2,
-      },
-      {
-        godzina: "20:00",
-        nazwa: "pole dance",
-        poziom: "intro",
-        prowadzaca: "ewelina",
-      },
-      {
-        godzina: "21:00",
-        nazwa: "pole dance",
-        poziom: "intro",
-        prowadzaca: "ewelina",
-        wolne: "x",
-      },
-    ],
-    [],
-    [],
-    [],
-    [],
-    [],
-  ]);
+  let [dane, setDane] = useState(loadFromStorage());
   let [color, setColor] = useState("#d88076");
   let [tytul, setTytul] = useState("plan zajęć");
   let [sala, setSala] = useState("SALA 1");
@@ -113,6 +60,12 @@ function App() {
     };
     oldDane[index].push(zajecia);
     setDane(oldDane);
+    localStorage.setItem("zajecia", JSON.stringify(oldDane));
+  };
+
+  const deleteAllItems = () => {
+    localStorage.removeItem("zajecia");
+    setDane(loadFromStorage());
   };
 
   let nazwyDniTygodnia = [
@@ -271,6 +224,15 @@ function App() {
         >
           Facebook Post
         </Button>
+
+        <Button
+          style={{ background: "lightblue" }}
+          onClick={() => {
+            deleteAllItems();
+          }}
+        >
+          Usun Wszystkie zajecia z grafiku
+        </Button>
       </ResolutionsMenu>
 
       <FlexContainer
@@ -312,7 +274,7 @@ function App() {
       </FlexContainer>
       {/* FORM TO UPLOAD NEW DATA */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <select {...register("dzien")}>
+        <select id="dzien" {...register("dzien")}>
           <option value="PONIEDZIAŁEK">PONIEDZIAŁEK</option>
           <option value="WTOREK">WTOREK</option>
           <option value="ŚRODA">ŚRODA</option>
@@ -358,6 +320,35 @@ function App() {
         ></input>
         <button id="submit" type="submit">
           DODAJ
+        </button>
+
+        <button
+          id="submit"
+          style={{ background: "lightblue" }}
+          type="button"
+          onClick={() => {
+            let godzina = document.getElementById("godzina").value;
+            let dzien = document.getElementById("dzien").value;
+            let nazwa = document.getElementById("nazwa").value.toLowerCase();
+
+            const getAllExcept = (value) => {
+              return (
+                value.godzina !== godzina &&
+                String.toString(value.nazwa).toLowerCase() !== nazwa
+              );
+            };
+
+            let itemsFromStorage = JSON.parse(localStorage.getItem("zajecia"));
+            let indexOfDay = nazwyDniTygodnia.findIndex((value) => {
+              return value === dzien;
+            });
+            itemsFromStorage[indexOfDay] =
+              itemsFromStorage[indexOfDay].filter(getAllExcept);
+            localStorage.setItem("zajecia", JSON.stringify(itemsFromStorage));
+            setDane(loadFromStorage());
+          }}
+        >
+          USUŃ (wprowadź dzień, nazwę i godzinę który chcesz usunąć)
         </button>
       </form>
 
